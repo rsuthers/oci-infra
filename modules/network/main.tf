@@ -1,57 +1,20 @@
-resource "oci_core_vcn" "demo_vcn" {
-  compartment_id = var.compartment_ocid
-  cidr_block     = "10.0.0.0/16"
-  display_name   = "demo-test-vcn"
-  dns_label      = "demotestvcn"
+resource "oci_core_vcn" "this" {
+  compartment_id = var.compartment_id
+
+  display_name = var.vcn_name
+  cidr_block   = var.vcn_cidr
+  dns_label    = var.vcn_dns_label
 }
 
-resource "oci_core_internet_gateway" "demo_igw" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.demo_vcn.id
-  display_name   = "demo-test-igw"
-  enabled        = true
-}
+resource "oci_core_subnet" "this" {
+  for_each = var.subnets
 
-resource "oci_core_route_table" "demo_rt" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.demo_vcn.id
-  display_name   = "demo-test-rt"
+  compartment_id = var.compartment_id
+  vcn_id         = oci_core_vcn.this.id
 
-  route_rules {
-    network_entity_id = oci_core_internet_gateway.demo_igw.id
-    destination       = "0.0.0.0/0"
-    destination_type  = "CIDR_BLOCK"
-  }
-}
+  display_name = each.value.name
+  cidr_block   = each.value.cidr
+  dns_label    = each.value.dns_label
 
-resource "oci_core_security_list" "demo_sl" {
-  compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_vcn.demo_vcn.id
-  display_name   = "demo-test-sl"
-
-  egress_security_rules {
-    protocol    = "all"
-    destination = "0.0.0.0/0"
-  }
-
-  ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
-
-    tcp_options {
-      min = 22
-      max = 22
-    }
-  }
-}
-
-resource "oci_core_subnet" "demo_public_subnet" {
-  compartment_id             = var.compartment_ocid
-  vcn_id                     = oci_core_vcn.demo_vcn.id
-  cidr_block                 = "10.0.1.0/24"
-  display_name               = "demo-public-subnet"
-  dns_label                  = "publicsubnet"
-  route_table_id             = oci_core_route_table.demo_rt.id
-  security_list_ids          = [oci_core_security_list.demo_sl.id]
-  prohibit_public_ip_on_vnic = false
+  prohibit_public_ip_on_vnic = true
 }

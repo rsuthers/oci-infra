@@ -1,55 +1,55 @@
-resource "oci_identity_compartment" "environments" {
-  compartment_id = var.tenancy_ocid
-  name           = "Environments"
-  description    = "Parent compartment for environment-specific compartments"
-  enable_delete  = var.enable_delete
-}
-
-resource "oci_identity_compartment" "uat" {
-  compartment_id = oci_identity_compartment.environments.id
-  name           = "UAT"
-  description    = "UAT environment compartment"
-  enable_delete  = var.enable_delete
-}
-
-resource "oci_identity_compartment" "non_prod" {
-  compartment_id = oci_identity_compartment.environments.id
-  name           = "Non-Prod"
-  description    = "Non-production environment compartment"
-  enable_delete  = var.enable_delete
-}
-
-resource "oci_identity_compartment" "sandpit" {
-  compartment_id = oci_identity_compartment.environments.id
-  name           = "Sandpit"
-  description    = "Sandpit environment compartment"
-  enable_delete  = var.enable_delete
-}
-
-resource "oci_identity_compartment" "production" {
-  compartment_id = oci_identity_compartment.environments.id
-  name           = "Production"
-  description    = "Production environment compartment"
-  enable_delete  = var.enable_delete
-}
-
 resource "oci_identity_compartment" "network" {
   compartment_id = var.tenancy_ocid
   name           = "Network"
-  description    = "Central networking compartment"
-  enable_delete  = var.enable_delete
+  description    = "Shared and transit network services"
+  enable_delete  = true
+}
+
+resource "oci_identity_compartment" "environment" {
+  compartment_id = var.tenancy_ocid
+  name           = "Environment"
+  description    = "Workload environment landing zones"
+  enable_delete  = true
 }
 
 resource "oci_identity_compartment" "management" {
   compartment_id = var.tenancy_ocid
   name           = "Management"
-  description    = "Management and shared services compartment"
-  enable_delete  = var.enable_delete
+  description    = "Management, automation and operational tooling"
+  enable_delete  = true
 }
 
 resource "oci_identity_compartment" "security" {
   compartment_id = var.tenancy_ocid
   name           = "Security"
-  description    = "Security services and monitoring compartment"
-  enable_delete  = var.enable_delete
+  description    = "Security, audit and governance services"
+  enable_delete  = true
+}
+
+resource "oci_identity_compartment" "sandpit" {
+  compartment_id = oci_identity_compartment.environment.id
+  name           = "Sandpit"
+  description    = "Sandbox and proof-of-concept workloads"
+  enable_delete  = true
+}
+
+resource "oci_identity_compartment" "non_prod" {
+  compartment_id = oci_identity_compartment.environment.id
+  name           = "Non-Prod"
+  description    = "Non-production workloads"
+  enable_delete  = true
+}
+
+resource "oci_identity_compartment" "uat" {
+  compartment_id = oci_identity_compartment.environment.id
+  name           = "UAT"
+  description    = "User acceptance testing workloads"
+  enable_delete  = true
+}
+
+resource "oci_identity_compartment" "production" {
+  compartment_id = oci_identity_compartment.environment.id
+  name           = "Production"
+  description    = "Production workloads"
+  enable_delete  = true
 }

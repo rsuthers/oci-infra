@@ -1,0 +1,59 @@
+title: Demo Non-Prod VCN
+description: Creates the preferred compartment structure and deploys one demo Non-Prod VCN with four private subnets.
+schemaVersion: 1.1.0
+version: "1.0"
+
+variableGroups:
+  - title: "OCI Target"
+    variables:
+      - region
+      - tenancy_ocid
+
+  - title: "VCN CIDR Configuration"
+    variables:
+      - vcn_cidr
+      - application_subnet_cidr
+      - database_subnet_cidr
+      - storage_subnet_cidr
+      - integration_subnet_cidr
+
+variables:
+  region:
+    type: oci:identity:region:name
+    title: Region
+    required: true
+
+  tenancy_ocid:
+    type: string
+    title: Tenancy OCID
+    required: true
+
+  vcn_cidr:
+    type: string
+    title: VCN CIDR
+    default: "10.50.0.0/16"
+    required: true
+
+  application_subnet_cidr:
+    type: string
+    title: Application Subnet CIDR
+    default: "10.50.10.0/24"
+    required: true
+
+  database_subnet_cidr:
+    type: string
+    title: Database Subnet CIDR
+    default: "10.50.20.0/24"
+    required: true
+
+  storage_subnet_cidr:
+    type: string
+    title: Storage Subnet CIDR
+    default: "10.50.30.0/24"
+    required: true
+
+  integration_subnet_cidr:
+    type: string
+    title: Integration Subnet CIDR
+    default: "10.50.40.0/24"
+    required: true

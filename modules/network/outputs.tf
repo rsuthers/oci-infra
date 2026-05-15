@@ -1,9 +1,19 @@
 output "vcn_id" {
-  description = "VCN OCID"
-  value       = oci_core_vcn.demo_vcn.id
+  value = oci_core_vcn.this.id
 }
 
-output "public_subnet_id" {
-  description = "Public subnet OCID"
-  value       = oci_core_subnet.demo_public_subnet.id
+output "vcn_name" {
+  value = oci_core_vcn.this.display_name
+}
+
+output "subnet_ids" {
+  value = {
+    for key, subnet in oci_core_subnet.this : key => subnet.id
+  }
+}
+
+output "subnet_names" {
+  value = {
+    for key, subnet in oci_core_subnet.this : key => subnet.display_name
+  }
 }
